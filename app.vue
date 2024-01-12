@@ -1,65 +1,71 @@
 <template>
-  <div>
-    <!-- Lista de repositorios -->
-    <ul>
-      <li v-for="repo in repositorios" :key="repo.id">
-        {{ repo.name }} - {{ repo.description }}
-      </li>
-    </ul>
+  <div class="container mx-auto p-6">
+    <!-- Repositories List -->
+    <RepoList :repos="repositories" />
 
-    <!-- Indicador de carga -->
-    <div v-if="cargando">Cargando más repositorios...</div>
+    <!-- Loading Indicator -->
+    <LoadingIndicator v-if="isLoading" />
 
-    <!-- Mensaje de error -->
-    <div v-if="error">Ha ocurrido un error: {{ error }}</div>
+    <!-- Error Message -->
+    <ErrorMessage v-if="error" :message="error" />
   </div>
 </template>
 
 <script>
+import RepoList from '@/components/repoList.vue'
+import LoadingIndicator from '@/components/loadingIndicator.vue'
+import ErrorMessage from '@/components/errorMessage.vue'
+
 export default {
+  components: { RepoList, LoadingIndicator, ErrorMessage },
+
   data() {
     return {
-      repositorios: [], // Almacenará los repositorios cargados
-      cargando: false, // Indicador de si se están cargando datos
-      error: null, // Almacenará un mensaje de error si ocurre alguno
-      pagina: 1, // Control de paginación para la API
+      repositories: [],
+      isLoading: false,
+      error: null,
+      page: 1,
     }
   },
-  created() {
-    this.cargarRepositorios() // Cargar inicialmente los repositorios
-  },
-  methods: {
-    async cargarRepositorios() {
-      if (this.cargando) return
 
-      this.cargando = true
+  created() {
+    this.loadRepositories()
+  },
+
+  methods: {
+    async loadRepositories() {
+      if (this.isLoading) return
+
+      this.isLoading = true
       this.error = null
 
-      const baseUrl = 'https://api.github.com/users/Kal-elSam/repos'
+      const user = this.page % 2 === 0 ? 'Kal-elSam' : 'midudev'
+      const baseUrl = `https://api.github.com/users/${user}/repos`
+
       try {
         const response = await fetch(
-          `${baseUrl}?page=${this.pagina}&per_page=10`,
+          `${baseUrl}?page=${Math.ceil(this.page / 2)}&per_page=10`,
         )
         if (!response.ok) {
-          throw new Error('No se han podido cargar los repositorios')
+          throw new Error('Failed to load repositories')
         }
         const repos = await response.json()
 
         if (!Array.isArray(repos)) {
-          throw new Error('La respuesta no es un array')
+          throw new Error('Response is not an array')
         }
 
         if (repos.length > 0) {
-          this.repositorios.push(...repos)
+          this.repositories.push(...repos)
         } else {
-          this.error = 'No hay más repositorios'
+          this.error = 'No more repositories to load'
         }
 
-        this.pagina += 1
+        this.page += 1
       } catch (err) {
-        this.error = `Error al cargar los repositorios: ${err.message}` // Manejo de errores
+        this.error = `Error loading repositories: ${err.message}`
       } finally {
-        this.cargando = false
+        this.isLoading = false
       }
     },
   },
