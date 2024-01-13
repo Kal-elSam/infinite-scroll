@@ -30,31 +30,18 @@ export default {
   },
 
   mounted() {
-    this.retrieveState()
+    this.loadRepositories() // Carga inicial de repositorios
     this.createIntersectionObserver()
   },
 
   methods: {
-    retrieveState() {
-      if (typeof window !== 'undefined') {
-        const savedData = localStorage.getItem('repoData')
-        if (savedData) {
-          const { repositories, page } = JSON.parse(savedData)
-          this.repositories = repositories
-          this.page = page
-        } else {
-          this.loadRepositories()
-        }
-      }
-    },
-
     async loadRepositories() {
       if (this.isLoading) return
 
       this.isLoading = true
       this.error = null
 
-      const users = ['Kal-elSam', 'midudev', 'Klerith']
+      const users = ['midudev', 'Kal-ElSam', 'Klerith']
       const userIndex = (this.page - 1) % users.length
       const user = users[userIndex]
       const baseUrl = `https://api.github.com/users/${user}/repos`
@@ -73,23 +60,10 @@ export default {
 
         this.repositories.push(...repos)
         this.page += 1
-        this.saveState()
       } catch (err) {
         this.error = `Error loading repositories: ${err.message}`
       } finally {
         this.isLoading = false
-      }
-    },
-
-    saveState() {
-      if (typeof window !== 'undefined') {
-        localStorage.setItem(
-          'repoData',
-          JSON.stringify({
-            repositories: this.repositories,
-            page: this.page,
-          }),
-        )
       }
     },
 
