@@ -13,4 +13,16 @@ export default defineNuxtConfig({
       autoprefixer: {},
     },
   },
+  app: {
+    head: {
+      title: 'Infinite-scroll',
+      meta: [
+        {
+          hid: 'description',
+          name: 'description',
+          content: 'Mi aplicación Nuxt',
+        },
+      ],
+    },
+  },
 })

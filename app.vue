@@ -98,6 +98,7 @@ export default {
 .app-container {
   font-family: 'Inter', sans-serif;
 }
+
 .observer-element {
   height: 10px;
   width: 100%;
