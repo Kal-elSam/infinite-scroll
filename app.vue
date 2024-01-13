@@ -1,15 +1,22 @@
 <template>
-  <div class="container mx-auto p-6">
-    <!-- Repositories List -->
-    <RepoList :repos="repositories" />
+  <div class="app-container bg-gray-900 min-h-screen text-white">
+    <!-- Header -->
+    <header class="bg-gray-800 p-4 shadow-md">
+      <h1 class="text-center text-3xl font-bold">Repository Explorer</h1>
+    </header>
 
-    <!-- Loading Indicator -->
-    <LoadingIndicator v-if="isLoading" />
+    <div class="container mx-auto p-6">
+      <!-- Repositories List -->
+      <RepoList :repos="repositories" />
 
-    <!-- Error Message -->
-    <ErrorMessage v-if="error" :message="error" />
+      <!-- Loading Indicator -->
+      <LoadingIndicator v-if="isLoading" />
+
+      <!-- Error Message -->
+      <ErrorMessage v-if="error" :message="error" />
+    </div>
+    <div ref="observerElement" class="observer-element"></div>
   </div>
-  <div ref="observerElement" class="observer-element"></div>
 </template>
 
 <script>
@@ -88,6 +95,9 @@ export default {
 </script>
 
 <style>
+.app-container {
+  font-family: 'Inter', sans-serif;
+}
 .observer-element {
   height: 10px;
   width: 100%;

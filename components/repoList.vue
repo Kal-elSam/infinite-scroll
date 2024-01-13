@@ -1,7 +1,9 @@
 <template>
-  <ul>
-    <repoListItem v-for="repo in repos" :key="repo.id" :repo="repo" />
-  </ul>
+  <div class="bg-black min-h-screen">
+    <ul class="divide-y divide-gray-700">
+      <repo-list-item v-for="repo in repos" :key="repo.id" :repo="repo" />
+    </ul>
+  </div>
 </template>
 
 <script>
@@ -17,3 +19,7 @@ export default {
   },
 }
 </script>
+
+<style scoped>
+/* Si tienes estilos adicionales específicos, pueden ir aquí */
+</style>
